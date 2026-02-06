@@ -36,7 +36,6 @@ Example usage:
   cat <<EOF > src/_lib.rs
   new!(
       '&' -> \"&amp;\",
-      '/' -> \"&#x2f;\",
       '<' -> \"&lt;\",
       '>' -> \"&gt;\",
       '\"' -> \"&quot;\",

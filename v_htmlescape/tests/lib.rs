@@ -31,14 +31,14 @@ mod string {
     fn tests() {
         use std::borrow::Cow;
         let empty = "";
-        let escapes = "\"&'/<>";
-        let escaped = "&quot;&amp;&#x27;&#x2f;&lt;&gt;";
-        let utf8: &str = &all_utf8_less("\"&'/<>");
+        let escapes = "\"&'<>";
+        let escaped = "&quot;&amp;&#x27;&lt;&gt;";
+        let utf8: &str = &all_utf8_less("\"&'<>");
         let empty_heap = String::new();
         let short = "foobar";
         let string_long: &str = &short.repeat(1024);
-        let string = "\"&'/<>";
-        let cow = Cow::Owned("\"&'/<>".to_string());
+        let string = "\"&'<>";
+        let cow = Cow::Owned("\"&'<>".to_string());
         assert_eq!(
             result(&[short, escapes, short].join("")),
             [short, escaped, short].join("")
@@ -155,14 +155,14 @@ mod fmt {
     fn tests() {
         use std::borrow::Cow;
         let empty = "";
-        let escapes = "\"&'/<>";
-        let escaped = "&quot;&amp;&#x27;&#x2f;&lt;&gt;";
-        let utf8: &str = &all_utf8_less("\"&'/<>");
+        let escapes = "\"&'<>";
+        let escaped = "&quot;&amp;&#x27;&lt;&gt;";
+        let utf8: &str = &all_utf8_less("\"&'<>");
         let empty_heap = String::new();
         let short = "foobar";
         let string_long: &str = &short.repeat(1024);
-        let string = "\"&'/<>";
-        let cow = Cow::Owned("\"&'/<>".to_string());
+        let string = "\"&'<>";
+        let cow = Cow::Owned("\"&'<>".to_string());
         assert_eq!(
             result(&[short, escapes, short].join("")),
             [short, escaped, short].join("")
@@ -281,14 +281,14 @@ mod bytes {
     fn tests() {
         use std::borrow::Cow;
         let empty = "";
-        let escapes = "\"&'/<>";
-        let escaped = "&quot;&amp;&#x27;&#x2f;&lt;&gt;";
-        let utf8: &str = &all_utf8_less("\"&'/<>");
+        let escapes = "\"&'<>";
+        let escaped = "&quot;&amp;&#x27;&lt;&gt;";
+        let utf8: &str = &all_utf8_less("\"&'<>");
         let empty_heap = String::new();
         let short = "foobar";
         let string_long: &str = &short.repeat(1024);
-        let string = "\"&'/<>";
-        let cow = Cow::Owned("\"&'/<>".to_string());
+        let string = "\"&'<>";
+        let cow = Cow::Owned("\"&'<>".to_string());
         assert_eq!(
             result(&[short, escapes, short].join("")),
             [short, escaped, short].join("")
