@@ -32,7 +32,7 @@ mod string {
         use std::borrow::Cow;
         let empty = "";
         let escapes = "\"&'<>";
-        let escaped = "&quot;&amp;&#x27;&lt;&gt;";
+        let escaped = "&quot;&amp;&apos;&lt;&gt;";
         let utf8: &str = &all_utf8_less("\"&'<>");
         let empty_heap = String::new();
         let short = "foobar";
@@ -156,7 +156,7 @@ mod fmt {
         use std::borrow::Cow;
         let empty = "";
         let escapes = "\"&'<>";
-        let escaped = "&quot;&amp;&#x27;&lt;&gt;";
+        let escaped = "&quot;&amp;&apos;&lt;&gt;";
         let utf8: &str = &all_utf8_less("\"&'<>");
         let empty_heap = String::new();
         let short = "foobar";
@@ -282,7 +282,7 @@ mod bytes {
         use std::borrow::Cow;
         let empty = "";
         let escapes = "\"&'<>";
-        let escaped = "&quot;&amp;&#x27;&lt;&gt;";
+        let escaped = "&quot;&amp;&apos;&lt;&gt;";
         let utf8: &str = &all_utf8_less("\"&'<>");
         let empty_heap = String::new();
         let short = "foobar";

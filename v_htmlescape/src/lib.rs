@@ -15,7 +15,7 @@ static V_ESCAPE_CHARS: [u8; 256] = [
     5u8, 5u8, 5u8, 5u8, 5u8, 5u8, 5u8, 5u8, 5u8, 5u8, 5u8, 5u8, 5u8, 5u8, 5u8, 5u8, 5u8, 5u8, 5u8,
     5u8, 5u8, 5u8, 5u8, 5u8, 5u8, 5u8, 5u8, 5u8,
 ];
-static V_ESCAPE_QUOTES: [&str; 5usize] = ["&quot;", "&amp;", "&#x27;", "&lt;", "&gt;"];
+static V_ESCAPE_QUOTES: [&str; 5usize] = ["&quot;", "&amp;", "&apos;", "&lt;", "&gt;"];
 const V_ESCAPE_LEN: usize = 5usize;
 use v_escape_base::{Escapes, EscapesBuilder, Vector, escape_builder};
 #[derive(Debug, Clone, Copy)]

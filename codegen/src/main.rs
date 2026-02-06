@@ -39,7 +39,7 @@ Example usage:
       '<' -> \"&lt;\",
       '>' -> \"&gt;\",
       '\"' -> \"&quot;\",
-      '\\'' -> \"&#x27;\"
+      '\\'' -> \"&apos;\"
   );
   EOF
   v_escape-codegen -i .",
