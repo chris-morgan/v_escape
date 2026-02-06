@@ -10,7 +10,7 @@ use std::{
 use proc_macro2::{Ident, Span, TokenStream};
 use serde::Serialize;
 use tests::build_tests;
-use toml::Value;
+use toml::{Value, Table};
 
 use clap::Parser;
 
@@ -63,14 +63,14 @@ fn generate(dir: impl AsRef<Path>) -> anyhow::Result<()> {
     _generate(dir.as_ref())
 }
 
-fn read_cargo(p: &Path) -> anyhow::Result<(Value, String)> {
+fn read_cargo(p: &Path) -> anyhow::Result<(Table, String)> {
     let cargo_src =
         fs::read_to_string(p).map_err(|e| anyhow::anyhow!("Failed to read Cargo.toml: {}", e))?;
-    let mut cargo_value = cargo_src
-        .parse::<Value>()
+    let mut cargo = cargo_src
+        .parse::<Table>()
         .map_err(|e| anyhow::anyhow!("Failed to parse Cargo.toml: {}", e))?;
 
-    let doc: Value = toml::from_str(
+    let doc: Table = toml::from_str(
         r"
     [docs.rs]
     all-features = true
@@ -78,16 +78,12 @@ fn read_cargo(p: &Path) -> anyhow::Result<(Value, String)> {
     )
     .map_err(|e| anyhow::anyhow!("Failed to parse TOML: {}", e))?;
 
-    let cargo_mut = cargo_value
-        .as_table_mut()
-        .ok_or_else(|| anyhow::anyhow!("Expected a table for cargo_value"))?;
-
-    cargo_mut
+    cargo
         .get_mut("package")
         .ok_or_else(|| anyhow::anyhow!("Expected a package section in Cargo.toml"))?
         .as_table_mut()
         .ok_or_else(|| anyhow::anyhow!("Expected a table for package"))?
-        .insert("metadata".to_string(), doc);
+        .insert("metadata".to_string(), doc.into());
 
     let mut features = BTreeMap::new();
     features.insert("default", vec!["std", "string", "fmt", "bytes"]);
@@ -97,15 +93,15 @@ fn read_cargo(p: &Path) -> anyhow::Result<(Value, String)> {
     features.insert("fmt", vec!["v_escape-base/fmt"]);
     features.insert("bytes", vec!["v_escape-base/bytes"]);
 
-    cargo_mut.insert("features".into(), Value::from(features));
+    cargo.insert("features".into(), Value::from(features));
 
-    if !cargo_mut.contains_key("dependencies") {
-        cargo_mut.insert(
+    if !cargo.contains_key("dependencies") {
+        cargo.insert(
             "dependencies".into(),
             Value::from(BTreeMap::<String, Value>::new()),
         );
     }
-    let dependencies = cargo_mut
+    let dependencies = cargo
         .get_mut("dependencies")
         .ok_or_else(|| anyhow::anyhow!("Expected a table for dependencies"))?;
     dependencies
@@ -116,9 +112,7 @@ fn read_cargo(p: &Path) -> anyhow::Result<(Value, String)> {
             Value::try_from(Dep { workspace: true })?,
         );
 
-    let package_name = cargo_value
-        .as_table()
-        .ok_or_else(|| anyhow::anyhow!("Expected a table for cargo_value"))?
+    let package_name = cargo
         .get("package")
         .ok_or_else(|| anyhow::anyhow!("Expected a package section in Cargo.toml"))?
         .as_table()
@@ -129,7 +123,7 @@ fn read_cargo(p: &Path) -> anyhow::Result<(Value, String)> {
         .ok_or_else(|| anyhow::anyhow!("Expected a name as str"))?;
 
     let package_name = package_name.to_string();
-    Ok((cargo_value, package_name))
+    Ok((cargo, package_name))
 }
 
 fn _generate(dir: &Path) -> anyhow::Result<()> {
@@ -142,8 +136,8 @@ fn _generate(dir: &Path) -> anyhow::Result<()> {
 
     // Modify Cargo.toml
     // TODO: should use a pretty toml
-    let cargo = dir.join("Cargo.toml");
-    let (cargo_value, name) = read_cargo(&cargo)?;
+    let cargo_path = dir.join("Cargo.toml");
+    let (cargo, name) = read_cargo(&cargo_path)?;
 
     // Check directories
     let src = dir.join("src");
@@ -176,7 +170,7 @@ fn _generate(dir: &Path) -> anyhow::Result<()> {
     );
 
     // Write files
-    fs::write(&cargo, toml::to_string_pretty(&cargo_value)?)?;
+    fs::write(&cargo_path, toml::to_string_pretty(&cargo)?)?;
     fs::write(src.join("lib.rs"), head.clone() + &code_pretty)?;
     fs::write(test.join("lib.rs"), head.clone() + &code_test_pretty)?;
 
